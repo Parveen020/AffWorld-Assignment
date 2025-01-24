@@ -1,0 +1,227 @@
+import React, { useContext, useState, useEffect } from "react";
+import "./Task.css";
+import { UserContext } from "../../context/userContext";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const Task = () => {
+  const { token, url, data, setShowLogin } = useContext(UserContext);
+  const [tasks, setTasks] = useState({
+    Pending: [],
+    Completed: [],
+    Done: [],
+  });
+  const [formData, setFormData] = useState({ name: "", description: "" });
+
+  useEffect(() => {
+    if (token && data && data.userId) {
+      fetchTasks();
+      setShowLogin(false);
+    } else if (!token) {
+      setTasks({ Pending: [], Completed: [], Done: [] });
+    }
+  }, [token, data]);
+
+  const fetchTasks = async () => {
+    try {
+      if (!data || !data.userId) {
+        setShowLogin(true);
+        return;
+      }
+
+      const response = await axios.post(`${url}/AffWorld/getAllTasks`, {
+        id: data.userId,
+      });
+
+      if (response.data.success) {
+        const organizedTasks = {
+          Pending: response.data.tasks.filter(
+            (task) => task.status === "Pending"
+          ),
+          Completed: response.data.tasks.filter(
+            (task) => task.status === "Completed"
+          ),
+          Done: response.data.tasks.filter((task) => task.status === "Done"),
+        };
+        setTasks(organizedTasks);
+      }
+    } catch (error) {
+      console.error("Full error:", error);
+      setShowLogin(true);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const addTask = async () => {
+    if (!token) {
+      setShowLogin(true);
+      return;
+    }
+    try {
+      const taskData = {
+        name: formData.name,
+        description: formData.description,
+      };
+
+      const response = await axios.post(
+        `${url}/AffWorld/createTask`,
+        taskData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        fetchTasks();
+        setFormData({ name: "", description: "" });
+        toast.success("Task added successfully");
+      }
+    } catch (error) {
+      console.log("Error adding task: " + error.message);
+      setShowLogin(true);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addTask();
+    }
+  };
+
+  const deleteTask = async (columnName, taskId) => {
+    try {
+      await axios.delete(`${url}/AffWorld/deleteTask/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setTasks((prevTasks) => ({
+        ...prevTasks,
+        [columnName]: prevTasks[columnName].filter(
+          (task) => task._id !== taskId
+        ),
+      }));
+      toast.success("Tasks deleted successfully");
+    } catch (error) {
+      alert("Error deleting task: " + error.message);
+    }
+  };
+
+  const handleDragStart = (e, task, sourceColumn) => {
+    e.dataTransfer.setData("task", JSON.stringify(task));
+    e.dataTransfer.setData("sourceColumn", sourceColumn);
+  };
+
+  const handleDrop = async (e, targetColumn) => {
+    e.preventDefault();
+    const taskData = JSON.parse(e.dataTransfer.getData("task"));
+    const sourceColumn = e.dataTransfer.getData("sourceColumn");
+
+    if (sourceColumn === targetColumn) return;
+
+    try {
+      const response = await axios.put(
+        `${url}/AffWorld/updateTask/${taskData._id}`,
+        { status: targetColumn },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data) {
+        setTasks((prevTasks) => {
+          const sourceColumnTasks = prevTasks[sourceColumn].filter(
+            (task) => task._id !== taskData._id
+          );
+          const updatedTask = { ...taskData, status: targetColumn };
+          toast.success("Task status updated to " + targetColumn);
+          return {
+            ...prevTasks,
+            [sourceColumn]: sourceColumnTasks,
+            [targetColumn]: [...prevTasks[targetColumn], updatedTask],
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Error updating task status:", error);
+      alert("Error updating task status: " + error.message);
+    }
+  };
+
+  const renderColumn = (columnName, columnTitle) => {
+    return (
+      <div
+        className="task-column"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => handleDrop(e, columnName)}
+      >
+        <div className="task-column-heading">
+          <h2>{columnTitle}</h2>
+        </div>
+        <div className="task-column-body">
+          {tasks[columnName]?.map((task) => (
+            <div
+              key={task._id}
+              draggable
+              onDragStart={(e) => handleDragStart(e, task, columnName)}
+              className="task-item"
+            >
+              <div className="task-info">
+                <h3>{task.name}</h3>
+                <p>{task.description}</p>
+              </div>
+              <button
+                onClick={() => deleteTask(columnName, task._id)}
+                className="delete-btn"
+              >
+                🗑️
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="task-management">
+      <div className="task-input">
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          onKeyDown={handleKeyPress}
+          placeholder="Name"
+        />
+        <input
+          type="text"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          onKeyDown={handleKeyPress}
+          placeholder="Description"
+        />
+        <button onClick={addTask}>Add Task</button>
+      </div>
+      <div className="task-board">
+        {renderColumn("Pending", "Pending")}
+        {renderColumn("Completed", "Completed")}
+        {renderColumn("Done", "Done")}
+      </div>
+    </div>
+  );
+};
+
+export default Task;
