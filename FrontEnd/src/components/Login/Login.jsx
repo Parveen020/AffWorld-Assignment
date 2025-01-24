@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import "./Login.css";
 import { assets } from "../../assets/assets";
-import { UserContext } from "../../context/userContext";
+import { UserContext } from "../../context/UserContext";
 
 const Login = ({ onClose }) => {
   const { login, register, forgotPassword } = useContext(UserContext);

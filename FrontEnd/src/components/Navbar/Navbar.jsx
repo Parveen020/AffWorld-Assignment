@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import "./Navbar.css";
-import { UserContext } from "../../context/userContext";
+import { UserContext } from "../../context/UserContext";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 

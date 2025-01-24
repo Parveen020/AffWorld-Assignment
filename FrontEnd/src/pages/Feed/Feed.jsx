@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./Feed.css";
 import axios from "axios";
-import { UserContext } from "../../context/userContext";
+import { UserContext } from "../../context/UserContext";
 import AddFeed from "../AddFeed/AddFeed";
 import Login from "../../components/Login/Login";
 

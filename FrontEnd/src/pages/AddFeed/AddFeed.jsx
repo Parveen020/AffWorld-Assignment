@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./AddFeed.css";
 import axios from "axios";
-import { UserContext } from "../../context/userContext";
+import { UserContext } from "../../context/UserContext";
 import { assets } from "../../assets/assets";
 import { toast } from "react-toastify";
 

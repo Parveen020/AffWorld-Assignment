@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { UserContext } from "./context/userContext";
+import { UserContext } from "./context/UserContext";
 import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
 import Feed from "./pages/Feed/Feed";
