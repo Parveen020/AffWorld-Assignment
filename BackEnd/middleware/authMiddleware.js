@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 
+// function to provide the authentication token of the logged in user,
+// it helps user to create feed and tasks to the user and perform related operation to him
 const authMiddleware = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {

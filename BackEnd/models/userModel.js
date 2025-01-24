@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+// user model that stores the  name, email, password,
+// tasks as an array[that includes all the task id that he has created]
+// and feeds as an array[that stores all the feeds id]
 const userSchema = new mongoose.Schema(
   {
     name: {

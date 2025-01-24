@@ -4,9 +4,11 @@ import axios from "axios";
 import { UserContext } from "../../context/UserContext";
 import { assets } from "../../assets/assets";
 import { toast } from "react-toastify";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const AddFeed = ({ onClose, onPostAdded }) => {
-  const { token, url } = useContext(UserContext);
+  const { token, url, isLoading, setIsLoading } = useContext(UserContext);
   const [isClosing, setIsClosing] = useState(false);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -14,13 +16,14 @@ const AddFeed = ({ onClose, onPostAdded }) => {
     caption: "",
   });
 
+  // It is code for the form that is popped up when logged in user clicks the create task button
+  // function for handle how the form will be closed.
   const handleClose = () => {
     setIsClosing(true);
-    setTimeout(() => {
-      onClose();
-    }, 600);
+    onClose();
   };
 
+  // function for showing prevew of the image in the form
   useEffect(() => {
     if (image) {
       const preview = URL.createObjectURL(image);
@@ -29,14 +32,17 @@ const AddFeed = ({ onClose, onPostAdded }) => {
     }
   }, [image]);
 
+  // function for handling on chnage property of the form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // function for handle submit button operation, which submit the data to create feed api to create a feed
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const form = new FormData();
       form.append("image", image);
       form.append("caption", formData.caption);
@@ -59,6 +65,8 @@ const AddFeed = ({ onClose, onPostAdded }) => {
     } catch (error) {
       alert("Error adding feed: " + error.message);
       toast.error("Error adding feed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,39 +104,16 @@ const AddFeed = ({ onClose, onPostAdded }) => {
             className="form-textarea"
             required
           />
-          <button type="submit" className="submit-button">
+          <button type="submit" className="submit-button" disabled={isLoading}>
             Add
           </button>
         </form>
       </div>
+      <Backdrop sx={{ color: "#fff", zIndex: 9999 }} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };
 
 export default AddFeed;
-
-const addTask = async () => {
-  try {
-    const taskData = {
-      name: formData.name,
-      description: formData.description,
-    };
-
-    const response = await axios.post(`${url}/AffWorld/createTask`, taskData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.data.success) {
-      setTasks((prevTasks) => ({
-        ...prevTasks,
-        pending: [...prevTasks.pending, response.data.task],
-      }));
-      setFormData({ name: "", description: "" });
-    }
-  } catch (error) {
-    alert("Error adding task: " + error.message);
-  }
-};

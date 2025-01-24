@@ -6,8 +6,9 @@ import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { token, setShowLogin, data, logout } = useContext(UserContext);
-  const name = data?.name;
+  const name = data?.name; // extracting name of the user from user data
 
+  // function for generating user name combination for login button replacement
   const getUserName = (name) =>
     name
       ? name

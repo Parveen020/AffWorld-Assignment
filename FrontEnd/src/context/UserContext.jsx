@@ -7,6 +7,7 @@ export const UserContext = createContext(null);
 const UserContextProvider = (props) => {
   const url = "https://affworld-assignment-e6vb.onrender.com";
   const [showLogin, setShowLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState("");
   const [email, setEmail] = useState("");
   const [data, setData] = useState(() => {
@@ -16,6 +17,7 @@ const UserContextProvider = (props) => {
       : { name: "", tasks: [], userId: "" };
   });
 
+  //getUser function
   const getUser = async (email) => {
     try {
       const response = await axios.post(`${url}/AffWorld/getUser`, { email });
@@ -29,8 +31,10 @@ const UserContextProvider = (props) => {
     }
   };
 
+  // login function
   const login = async (loginData, onClose) => {
     try {
+      setIsLoading(true);
       const response = await axios.post(`${url}/AffWorld/login`, loginData);
       if (response.data.success) {
         toast.success("Login successful");
@@ -45,11 +49,15 @@ const UserContextProvider = (props) => {
       }
     } catch (error) {
       toast.error("Error during login:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // register function
   const register = async (registerData, setState) => {
     try {
+      setIsLoading(true);
       const response = await axios.post(
         `${url}/AffWorld/register`,
         registerData
@@ -62,11 +70,15 @@ const UserContextProvider = (props) => {
       }
     } catch (error) {
       console.error("Error during registration:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // forgot password function
   const forgotPassword = async (passwordData, setState) => {
     try {
+      setIsLoading(true);
       const response = await axios.post(
         `${url}/AffWorld/forgotPassword`,
         passwordData
@@ -79,18 +91,24 @@ const UserContextProvider = (props) => {
       }
     } catch (error) {
       console.error("Error during password reset:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // logout function
   const logout = () => {
+    setIsLoading(true);
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("userData");
     setToken("");
     setEmail("");
     setData({ name: "", tasks: [] });
+    setIsLoading(false);
   };
 
+  // useEffect function, always called first when ever the site is loaded
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedEmail = localStorage.getItem("email");
@@ -101,6 +119,7 @@ const UserContextProvider = (props) => {
     }
   }, []);
 
+  // context variables
   const contextValue = {
     url,
     token,
@@ -116,6 +135,8 @@ const UserContextProvider = (props) => {
     register,
     forgotPassword,
     logout,
+    isLoading,
+    setIsLoading,
   };
 
   return (

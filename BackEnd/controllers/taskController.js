@@ -1,6 +1,7 @@
 import taskModel from "../models/taskModel.js";
 import userModel from "../models/userModel.js";
 
+// create task Api, that needs the name, description and user id to create a task.
 const createTask = async (req, res) => {
   const { name, description } = req.body;
   const userId = req.user?.id;
@@ -36,6 +37,7 @@ const createTask = async (req, res) => {
   }
 };
 
+// update task api which update the status of the task, it needs status for new status and id of the task
 const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -62,6 +64,7 @@ const updateTask = async (req, res) => {
   }
 };
 
+// api for deleting a task, which needs id to delete a task
 const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -83,6 +86,7 @@ const deleteTask = async (req, res) => {
   }
 };
 
+// api to extract all tasks from the database, it needs id of the user to extract his all tasks
 const getAllTask = async (req, res) => {
   try {
     const { id } = req.body;

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// task model that include name of the task, description, status(by default Pending), createdBy(user id, which create it)
 const taskSchema = new mongoose.Schema(
   {
     name: {

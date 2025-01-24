@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 import userModel from "../models/userModel.js";
 
-// login user
+// login user, require emial and password and mathes the hashed password in the database
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -31,11 +31,12 @@ const loginUser = async (req, res) => {
   }
 };
 
+// function to create Token when user do login
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
 };
 
-// register user
+// register user, require name, email and password to register, it stores the hashed password in the database
 const registerUser = async (req, res) => {
   const { name, password, email } = req.body;
 
@@ -87,7 +88,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-// forgot password
+// forgot password, which requires the email, new password, confirm password and update the user details in the database
 const forgotPassword = async (req, res) => {
   const { email, newPassword, confirmPassword } = req.body;
 
@@ -152,7 +153,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// get User
+// get User, which require email of the user to extract it's all details from the database
 const getUser = async (req, res) => {
   const { email } = req.body;
   if (!email) {

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// model for feed that includes the image, caption and createdBy(id of the user)
 const feedSchema = new mongoose.Schema(
   {
     image: {
