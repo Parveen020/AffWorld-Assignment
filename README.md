@@ -86,3 +86,18 @@ A full-stack web application enabling user authentication, task management, and 
 - Backend: Node.js, Express
 - Database: MongoDB
 - Authentication: Custom + potential Google OAuth
+
+### Process to run a program
+- Clone the repo
+- command - git clone <git url>
+- Move inside the FrontEnd and download all dependecies
+- commands
+  1. cd FrontEnd
+  2. npm i
+  3. npm run dev
+- Move inside the BancEnd and download all dependencies
+- commands
+  1. cd BackEnd
+  2. npm i
+  3. npm run server
+- As a result process porjects wil be run on the localhost of you enviroment.
