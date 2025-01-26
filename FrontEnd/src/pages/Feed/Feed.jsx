@@ -87,7 +87,7 @@ const Feeds = () => {
           {feeds.map((feed) => (
             <div className="single-feed" key={feed._id}>
               <div className="single-feed-image">
-                <img src={`${url}/images/${feed.image}`} alt="Feed" />
+                <img src={`${url}/images/` + feed.image} alt="Feed" />
               </div>
               <div className="single-feed-info">
                 <p>{feed.caption}</p>
