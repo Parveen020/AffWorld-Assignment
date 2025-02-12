@@ -3,7 +3,7 @@
 
 :root {
   --header-height: 60px;
-  --footer-height: 60px;
+  --footer-height: 30px;
   --main-padding: 20px;
 }
 *{
