@@ -2,12 +2,15 @@
     display: flex;
     justify-content: center;
     padding: 10px;
-    min-height: 400px;
-    height: calc(100vh - 100px);
+    min-height: calc(100vh - var(--header-height) - var(--footer-height) - 40px);
+    max-height: calc(100vh - var(--header-height) - var(--footer-height));
+    overflow: hidden;
+    margin-bottom: 10px;
 }
 
 .feed-container-window {
-    min-height: 80%;
+    min-height: min(80vh, 600px);
+    max-height: calc(100vh - var(--header-height) - var(--footer-height) - 40px);
     border-radius: 10px;
     width: 70%;
     max-width: 800px;
@@ -15,6 +18,9 @@
     border: 0.5px solid gray;
     overflow: hidden;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
 }
 
 .feed-header {
