@@ -291,6 +291,7 @@ const Task = () => {
     }
   };
 
+  // Update the renderColumn function to handle delete button touch events separately
   const renderColumn = (columnName, columnTitle) => {
     return (
       <div
@@ -308,7 +309,12 @@ const Task = () => {
               key={task._id}
               draggable
               onDragStart={(e) => handleDragStart(e, task, columnName)}
-              onTouchStart={(e) => handleTouchStart(e, task, columnName)}
+              onTouchStart={(e) => {
+                // Check if the touch target is not the delete button
+                if (!e.target.closest(".delete-btn")) {
+                  handleTouchStart(e, task, columnName);
+                }
+              }}
               className="task-item"
             >
               <div className="task-info">
@@ -316,7 +322,15 @@ const Task = () => {
                 <p>{task.description}</p>
               </div>
               <button
-                onClick={() => deleteTask(columnName, task._id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteTask(columnName, task._id);
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  deleteTask(columnName, task._id);
+                }}
                 className="delete-btn"
                 disabled={isLoading}
               >
