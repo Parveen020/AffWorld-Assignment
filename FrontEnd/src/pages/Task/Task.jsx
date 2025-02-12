@@ -15,6 +15,8 @@ const Task = () => {
     Done: [],
   });
   const [formData, setFormData] = useState({ name: "", description: "" });
+  const [draggedItem, setDraggedItem] = useState(null);
+  const [touchStartColumn, setTouchStartColumn] = useState(null);
 
   useEffect(() => {
     // if user is login then tasks created by him will be loaded and login pop up goes down
@@ -138,6 +140,69 @@ const Task = () => {
     }
   };
 
+  const handleTouchStart = (e, task, sourceColumn) => {
+    setDraggedItem(task);
+    setTouchStartColumn(sourceColumn);
+
+    // Get the touched element
+    const touchedElement = e.currentTarget;
+    touchedElement.style.opacity = "0.5";
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Prevent scrolling while dragging
+  };
+
+  const handleTouchEnd = async (e, targetColumn) => {
+    if (!draggedItem || !touchStartColumn) return;
+
+    const touchedElement = e.currentTarget;
+    touchedElement.style.opacity = "1";
+
+    // Only proceed if we're moving to a different column
+    if (touchStartColumn === targetColumn) {
+      setDraggedItem(null);
+      setTouchStartColumn(null);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await axios.put(
+        `${url}/AffWorld/updateTask/${draggedItem._id}`,
+        { status: targetColumn },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data) {
+        setTasks((prevTasks) => {
+          const sourceColumnTasks = prevTasks[touchStartColumn].filter(
+            (task) => task._id !== draggedItem._id
+          );
+          const updatedTask = { ...draggedItem, status: targetColumn };
+          toast.success("Task status updated to " + targetColumn);
+          return {
+            ...prevTasks,
+            [touchStartColumn]: sourceColumnTasks,
+            [targetColumn]: [...prevTasks[targetColumn], updatedTask],
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Error updating task status:", error);
+      toast.error("Error updating task status: " + error.message);
+    } finally {
+      setIsLoading(false);
+      setDraggedItem(null);
+      setTouchStartColumn(null);
+    }
+  };
+
   // function for handle dragging operation on every task
   const handleDragStart = (e, task, sourceColumn) => {
     e.dataTransfer.setData("task", JSON.stringify(task));
@@ -195,6 +260,7 @@ const Task = () => {
         className="task-column"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => handleDrop(e, columnName)}
+        onTouchEnd={(e) => handleTouchEnd(e, columnName)}
       >
         <div className="task-column-heading">
           <h2>{columnTitle}</h2>
@@ -205,6 +271,8 @@ const Task = () => {
               key={task._id}
               draggable
               onDragStart={(e) => handleDragStart(e, task, columnName)}
+              onTouchStart={(e) => handleTouchStart(e, task, columnName)}
+              onTouchMove={handleTouchMove}
               className="task-item"
             >
               <div className="task-info">

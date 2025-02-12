@@ -181,6 +181,20 @@
     .single-feed-image{
         height: 280px; 
     }
+    .task-column {
+        height: 300px;
+    }
+
+    .feed-container-window {
+        width: 100%; 
+        max-width: none; 
+        padding: 0;
+        margin: 0;
+    }
+
+    .single-feed-image {
+        height: 280px;
+    }
 }
 
 
