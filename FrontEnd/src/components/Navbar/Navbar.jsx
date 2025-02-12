@@ -1,14 +1,15 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import "./Navbar.css";
 import { UserContext } from "../../context/UserContext";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const { token, setShowLogin, data, logout } = useContext(UserContext);
-  const name = data?.name; // extracting name of the user from user data
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const name = data?.name;
 
-  // function for generating user name combination for login button replacement
   const getUserName = (name) =>
     name
       ? name
@@ -17,11 +18,17 @@ const Navbar = () => {
           .join("")
       : "";
 
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
   return (
     <div className="navbar">
-      <div className="navbar-brand">Hi, {name || "Guest"}</div>
-      <div className="navbar-links">
-        <NavLink to="/" className="nav-link"></NavLink>
+      <div className="navbar-brand">
+        Hi, <span>{name || "Guest"}</span>
+      </div>
+      <div className={`navbar-links ${isMenuOpen ? "open" : ""}`}>
+        <NavLink to="/" className="nav-link">
+          Home
+        </NavLink>
         <NavLink to="/feed" className="nav-link">
           Feed
         </NavLink>
@@ -43,6 +50,9 @@ const Navbar = () => {
             Login
           </button>
         )}
+      </div>
+      <div className="hamburger-menu" onClick={toggleMenu}>
+        {isMenuOpen ? <X size={30} /> : <Menu size={30} />}
       </div>
     </div>
   );

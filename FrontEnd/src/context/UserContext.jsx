@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 export const UserContext = createContext(null);
 
 const UserContextProvider = (props) => {
-  const url = "https://affworld-assignment-e6vb.onrender.com";
+  const url = "http://localhost:4000";
   const [showLogin, setShowLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState("");

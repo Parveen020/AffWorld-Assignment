@@ -142,6 +142,7 @@ const Task = () => {
   const handleDragStart = (e, task, sourceColumn) => {
     e.dataTransfer.setData("task", JSON.stringify(task));
     e.dataTransfer.setData("sourceColumn", sourceColumn);
+    e.dataTransfer.effectAllowed = "move";
   };
 
   // function for updating task status to column name on which they are dragged

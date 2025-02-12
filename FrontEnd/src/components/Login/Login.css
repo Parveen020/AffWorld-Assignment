@@ -1,73 +1,113 @@
-.LoginPopUp{
-    position: absolute;
-    z-index: 1;
-    width:100%;
+.LoginPopUp {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background-color: #00000090;
+    background-color: rgba(0, 0, 0, 0.6);
     display: grid;
-}
-.LoginPopUp-container{
+    z-index: 9999;
+  }
+  
+  .LoginPopUp-container {
     place-self: center;
-    width:max(23vw,330px);
+    width: max(23vw, 330px);
+    max-width: 400px;
     color: #808080;
     background-color: white;
     display: flex;
     flex-direction: column;
-    gap:25px;
-    padding:25px 30px; 
+    gap: 25px;
+    padding: 25px 30px;
     border-radius: 8px;
     font-size: 14px;
     animation: fadeIn 0.5s;
-}
-
-.LoginPopUp-title{
+    box-sizing: border-box;
+  }
+  
+  .LoginPopUp-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color:black;
-}
-
-.LoginPopUp-title img{
-    width:16px;
+    color: black;
+  }
+  
+  .LoginPopUp-title img {
+    width: 16px;
     cursor: pointer;
-}
-
-.LoginPopUp-input{
+  }
+  
+  .LoginPopUp-input {
     display: flex;
     flex-direction: column;
-    gap:20px; 
-}
-
-.LoginPopUp-input input{
+    gap: 20px;
+  }
+  
+  .LoginPopUp-input input {
     outline: none;
-    border:1px solid #c9c9c9;
-    padding:10px;
+    border: 1px solid #c9c9c9;
+    padding: 10px;
     border-radius: 4px;
-}
-
-.LoginPopUp-container button{
-    border:none;
-    padding:10px;
+    box-sizing: border-box;
+  }
+  
+  .LoginPopUp-container button {
+    border: none;
+    padding: 12px;
     border-radius: 4px;
-    color:white;
+    color: white;
     background-color: black;
     font-size: 15px;
     cursor: pointer;
-}
-
-.LoginPopUp-condition{
-    display:flex;
-    align-items: start;
-    gap:8px;
-    margin-top:-15px;
-}
-
-.LoginPopUp-condition input{
-    margin-top:5px;
-}
-
-.LoginPopUp p span{
-    color:black;
+    transition: background-color 0.3s ease;
+  }
+  
+  .LoginPopUp-container button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+  
+  .LoginPopUp p span {
+    color: black;
     font-weight: 500;
     cursor: pointer;
-}
+  }
+  
+  @media (max-width: 768px) {
+    .LoginPopUp-container {
+      width: 80vw;
+      padding: 20px;
+    }
+  
+    .LoginPopUp-input input {
+      padding: 8px;
+      font-size: 13px;
+    }
+  
+    .LoginPopUp-container button {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .LoginPopUp-container {
+      width: 90vw;
+      padding: 15px;
+    }
+  
+    .LoginPopUp-title h2 {
+      font-size: 18px;
+    }
+  
+    .LoginPopUp-input input {
+      font-size: 12px;
+      padding: 7px;
+    }
+  
+    .LoginPopUp-container button {
+      font-size: 13px;
+      padding: 8px;
+    }
+  }
+  

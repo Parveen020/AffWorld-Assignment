@@ -6,6 +6,7 @@ import AddFeed from "../AddFeed/AddFeed";
 import Login from "../../components/Login/Login";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Menu, X } from "lucide-react"; // Import from lucide-react
 
 const Feeds = () => {
   const { token, url, setShowLogin, isLoading, setIsLoading } =
@@ -13,10 +14,8 @@ const Feeds = () => {
   const [feedPopUp, setFeedPopUp] = useState(false);
   const [loginPopUp, setLoginPopUp] = useState(false);
   const [feeds, setFeeds] = useState([]);
+  const [showMenu, setShowMenu] = useState(false); // State for controlling the menu
 
-  // it is a code where all feeds are shown with image and caption
-
-  // function that fethces all the feeds from database through an api created in backEnd
   const getAllFeeds = async () => {
     try {
       setIsLoading(true);
@@ -38,13 +37,10 @@ const Feeds = () => {
     }
   };
 
-  // fucntion for fetching feeds on loading a page
   useEffect(() => {
     getAllFeeds();
   }, []);
 
-  // function for handle Add feed, which shows the login pop up when user is
-  // not logged in and show the add feed form on if user is login
   const handleAddFeed = () => {
     if (!token) {
       setShowLogin(true);
@@ -53,9 +49,6 @@ const Feeds = () => {
     }
   };
 
-  // function to fetching all feeds after adding a feed
-  // also it has Refresh button if feeds is not loaded then
-  // user can press the button to load all the feeds.
   const handlePostAdded = () => {
     setFeedPopUp(false);
     getAllFeeds();
@@ -82,12 +75,37 @@ const Feeds = () => {
               Refresh
             </button>
           </div>
+          {/* Hamburger Menu Icon */}
+          <div className="menu-icon" onClick={() => setShowMenu(!showMenu)}>
+            {showMenu ? <X /> : <Menu />}
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {showMenu && (
+          <div className="mobile-menu">
+            <button
+              className="mobile-create-button"
+              onClick={handleAddFeed}
+              disabled={isLoading}
+            >
+              Create Post
+            </button>
+            <button
+              className="mobile-refresh-button"
+              onClick={getAllFeeds}
+              disabled={isLoading}
+            >
+              Refresh
+            </button>
+          </div>
+        )}
+
         <div className="feed-body">
           {feeds.map((feed) => (
             <div className="single-feed" key={feed._id}>
               <div className="single-feed-image">
-                <img src={`${url}/images/${feed.image}`} alt="Feed" />
+                <img src={`${url}/images/` + feed.image} alt="Feed" />
               </div>
               <div className="single-feed-info">
                 <p>{feed.caption}</p>
@@ -96,6 +114,7 @@ const Feeds = () => {
           ))}
         </div>
       </div>
+
       {feedPopUp && (
         <AddFeed
           onClose={() => setFeedPopUp(false)}
@@ -111,6 +130,7 @@ const Feeds = () => {
           }}
         />
       )}
+
       <Backdrop sx={{ color: "#fff", zIndex: 9999 }} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>

@@ -12,3 +12,21 @@
     font-size:15px;
     color:white
 }
+
+
+@media (max-width: 768px) {
+    .Footer {
+        height: auto;
+        padding: 15px;
+    }
+
+    .Footer p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .Footer p {
+        font-size: 12px;
+    }
+}
