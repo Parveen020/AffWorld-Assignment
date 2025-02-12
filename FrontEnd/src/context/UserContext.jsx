@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 export const UserContext = createContext(null);
 
 const UserContextProvider = (props) => {
-  const url = "http://localhost:4000";
+  const url = "https://backend-se30.onrender.com";
   const [showLogin, setShowLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState("");
